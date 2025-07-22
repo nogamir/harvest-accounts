@@ -4,7 +4,13 @@ motor
 
 cryptography
 
-//for_unit_tests
+#for unit tests
 pytest
 httpx
 pytest-asyncio
+
+#for harvest service
+boto3
+pymongo
+schedule
+python-dotenv
