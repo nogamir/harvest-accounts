@@ -11,7 +11,7 @@ async def startup_db_client():
     app.state.mongodb_client = AsyncIOMotorClient(mongodb_uri)
     app.state.mongodb = app.state.mongodb_client["accounts_db"]
     app.state.accounts_collection = app.state.mongodb["accounts"]
-    print("✅ Connected to MongoDB!")
+    print("Connected to MongoDB!")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
