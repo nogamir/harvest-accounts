@@ -20,3 +20,13 @@ def collect_iam_roles(session: boto3.Session) -> List[Dict]:
     iam = session.client("iam")
     roles = iam.list_roles()["Roles"]
     return [{"RoleName": r["RoleName"], "Arn": r["Arn"]} for r in roles]
+
+###FORMAT FOR BUCKET-ARN
+# bucket_name = 'your-bucket-name'
+
+# response = s3.get_bucket_location(Bucket=bucket_name)
+# region = response['LocationConstraint'] or 'us-east-1'
+# bucket_arn = f"arn:aws:s3:::{bucket_name}"
+
+# print("Bucket ARN:", bucket_arn)
+# print("Bucket Region:", region)
