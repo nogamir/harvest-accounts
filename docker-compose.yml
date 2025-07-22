@@ -1,20 +1,23 @@
 version: '3.8'
 
 services:
-  web:
-    build: .
+  accounts_service:
+    build: 
+      context: ./accounts_service
+      dockerfile: Dockerfile
+    container_name: accounts_service
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app/app
+      - ./accounts_service:/accounts_service
     environment:
-      - PYTHONUNBUFFERED=1
+      - FERNET_KEY="QM3CAYtgFqmIe1YGQV0OncGM3ArqTa11vzGpCv2xHdk="
       - MONGODB_URI=mongodb://mongo:27017
     depends_on:
       - mongo
 
   mongo:
-    image: mongo:6
+    image: mongo:8
     container_name: mongodb
     ports:
       - "27017:27017"

@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+motor
+
+cryptography
+
+//for_unit_tests
+pytest
+httpx
+pytest-asyncio
