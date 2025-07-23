@@ -19,22 +19,24 @@ def harvest_all_accounts():
     for account in accounts:
         session = create_boto3_session(account)
         buckets_data = harvest_buckets(session)
-        roles_data = harvest_roles(session)
+        # roles_data = harvest_roles(session)
 
-        harvest_db[BUCKETS_COLLECTION_NAME].insert_one({
-            "account_id": account["_id"],
-            "data": buckets_data,
-        })
-        harvest_db[ROLES_COLLECTION_NAME].insert_one({
-            "account_id": account["_id"],
-            "data": roles_data,
-        })
+        for bucket_data in buckets_data:
+            harvest_db[BUCKETS_COLLECTION_NAME].update_one(
+                {"account_id": account["_id"], "id": bucket_data["id"]},  # filter
+                {"$set": bucket_data, "$setOnInsert": {"account_id": account["_id"]}},  # update
+                upsert=True
+            )
+        # harvest_db[ROLES_COLLECTION_NAME].insert_one({
+        #     "account_id": account["_id"],
+        #     "data": roles_data,
+        # })
         print(f"Harvested account {account['_id']}")
 
 ###SCHEDULE HARVEST SERVICE EVERY 4 HOURS
 if __name__ == "__main__":
     scheduler = BlockingScheduler()
-    scheduler.add_job(harvest_all_accounts, 'interval', hours=4)
+    scheduler.add_job(harvest_all_accounts, 'interval', seconds=20)
     print("Scheduler started... harvesting every 4 hours.")
     scheduler.start()
     

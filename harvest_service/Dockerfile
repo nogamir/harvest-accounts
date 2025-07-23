@@ -8,8 +8,8 @@ WORKDIR /harvest_service
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app source
-COPY src/ ./src
+# # Copy app source
+# COPY src/ ./src
 
 # Set env variables
 ENV PYTHONUNBUFFERED=1

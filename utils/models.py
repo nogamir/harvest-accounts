@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from pydantic import BaseModel
 
 class Account(BaseModel):
@@ -12,7 +12,7 @@ class S3Bucket(BaseModel):
     type: str
     bucketArn: str
     bucketRegion: str
-    creationDate: date
+    creationDate: datetime
     name: str  
 
 class IAMRole(BaseModel):

@@ -1,13 +1,15 @@
 from utils.models import Account, S3Bucket, IAMRole
 from utils.models import S3Bucket
+from datetime import date, time, datetime
+from utils.crypto_helper import decrypt_secret
 import boto3
 
 ###COMPLETE ACCORDING TO SPECIFICATIONS
 def create_boto3_session(account: Account):
     return boto3.Session(
-        aws_access_key_id=account["aws_access_key_id"],
-        aws_secret_access_key=account["aws_secret_access_key"],
-        region_name="us-east-1",
+        aws_access_key_id=account["accessKey"],
+        aws_secret_access_key=decrypt_secret(account["secret"]),
+        region_name="eu-north-1",
     )
 
 def harvest_buckets(session):
@@ -17,7 +19,12 @@ def harvest_buckets(session):
 
     for bucket_data in buckets_data:
         name = bucket_data["Name"]
-        creation_date = bucket_data["CreationDate"].date()
+        
+        raw_date = bucket_data["CreationDate"]
+        if isinstance(raw_date, date) and not isinstance(raw_date, datetime):
+            creation_date = datetime.combine(raw_date, time())
+        else:
+            creation_date = raw_date
 
         # Get bucket region
         region_resp = s3.get_bucket_location(Bucket=name)
@@ -34,9 +41,10 @@ def harvest_buckets(session):
             creationDate=creation_date,
             name=name,
         )
-        buckets.append(bucket)
+        buckets.append(bucket.dict())
 
     return buckets
+
 
 def harvest_roles(session):
     iam = session.client("iam")
@@ -71,6 +79,6 @@ def harvest_roles(session):
             tags=tags,
             inlinePoliciesNames=inline_policies_names,
         )
-        roles.append(role)
+        roles.append(role.dict())
 
     return roles
