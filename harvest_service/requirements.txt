@@ -1,0 +1,4 @@
+pymongo
+boto3
+pydantic
+apscheduler

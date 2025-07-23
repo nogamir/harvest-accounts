@@ -12,7 +12,7 @@ client = TestClient(app)
 sample_account = {
     "id": "123",
     "name": "Test Account",
-    "access_key": "accesskey123",
+    "accessKey": "accesskey123",
     "secret": "somesecret",
 }
 
@@ -27,7 +27,7 @@ def mock_accounts_collection():
         yield {
             "id": "123",
             "name": "Test Account",
-            "access_key": "accesskey123",
+            "accessKey": "accesskey123",
             "secret": "encrypted-somesecret",  # Use mocked encrypted secret here
         }
     mock_collection.find = MagicMock(return_value=async_gen())
@@ -45,7 +45,7 @@ def test_add_account(mock_encrypt):
     app.state.accounts_collection.insert_one.assert_awaited_once_with({
         "id": sample_account["id"],
         "name": sample_account["name"],
-        "access_key": sample_account["access_key"],
+        "accessKey": sample_account["accessKey"],
         "secret": "encrypted-somesecret",
     })
 
@@ -58,7 +58,7 @@ def test_edit_account(mock_encrypt):
         {"id": sample_account["id"]},
         {"$set": {
             "name": sample_account["name"],
-            "access_key": sample_account["access_key"],
+            "accessKey": sample_account["accessKey"],
             "secret": "encrypted-somesecret",
         }},
     )
@@ -79,5 +79,5 @@ def test_list_accounts(mock_decrypt):
     account = data["accounts"][0]
     assert account["id"] == "123"
     assert account["name"] == "Test Account"
-    assert account["access_key"] == "accesskey123"
+    assert account["accessKey"] == "accesskey123"
     assert account["secret"] == "somesecret"
