@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request
-from mongo_db.models import Account
+from .utils.models import Account
 from app.crypto_helper import encrypt_secret, decrypt_secret
 
 router = APIRouter()
@@ -10,7 +10,7 @@ async def add_account(account: Account, request: Request):
     encrypted_account = {
         "id": account.id,
         "name": account.name,
-        "accessKey": account.access_key,
+        "accessKey": account.accessKey,
         "secret": encrypted_secret,
     }
     await request.app.state.accounts_collection.insert_one(encrypted_account)
@@ -21,7 +21,7 @@ async def edit_account(account_id, account: Account, request: Request):
     encrypted_secret = encrypt_secret(account.secret)
     encrypted_account = {
         "name": account.name,
-        "accessKey": account.access_key,
+        "accessKey": account.accessKey,
         "secret": encrypted_secret,
     }
     await request.app.state.accounts_collection.update_one({"id": account_id}, {"$set": encrypted_account})
@@ -40,7 +40,7 @@ async def list_accounts(request: Request):
         accounts.append({
             "id": account["id"],
             "name": account["name"],
-            "accessKey": account["access_key"],
+            "accessKey": account["accessKey"],
             "secret": decrypt_secret(account["secret"]),
         })
     return {"accounts": accounts}

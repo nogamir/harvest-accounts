@@ -1,5 +1,5 @@
-from mongo_db.models import Account, S3Bucket, IAMRole
-from mongo_db.models import S3Bucket
+from utils.models import Account, S3Bucket, IAMRole
+from utils.models import S3Bucket
 import boto3
 
 ###COMPLETE ACCORDING TO SPECIFICATIONS

@@ -10,7 +10,7 @@ services:
       - "8000:8000"
     volumes:
       - ./accounts_service:/accounts_service
-      - ./mongodb:/mongodb 
+      - ./utils:/accounts_service/app/utils
     environment:
       - FERNET_KEY=QM3CAYtgFqmIe1YGQV0OncGM3ArqTa11vzGpCv2xHdk=
       - MONGODB_URI=mongodb://mongo:27017
@@ -24,7 +24,7 @@ services:
     container_name: harvest_service
     volumes:
       - ./harvest_service:/harvest_service
-      - ./mongodb:/mongodb 
+      - ./utils:/harvest_service/src/utils
     environment:
       - MONGODB_URI=mongodb://mongo:27017
     depends_on:
@@ -38,4 +38,3 @@ services:
       - "27017:27017"
     volumes:
       - ./mongo_db/mongo_data:/data/db
-

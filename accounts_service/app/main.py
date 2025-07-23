@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.endpoints import router
-from mongo_db.shared import (
+from .utils.shared import (
     MONGODB_URI, ACCOUNTS_DB_NAME, ACCOUNTS_COLLECTION_NAME
 )
 
