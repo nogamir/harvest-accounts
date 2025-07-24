@@ -68,7 +68,7 @@ docker-compose down
 
 Testing
 
-Run all tests using `pytest`. 
+To test each service, run `pytest` in the relevant container.
 
 ##################
 

@@ -67,6 +67,6 @@ def harvest_all_accounts():
 ###SCHEDULE HARVEST SERVICE EVERY 4 HOURS
 if __name__ == "__main__":
     scheduler = BlockingScheduler()
-    scheduler.add_job(harvest_all_accounts, 'interval', hours=4)
+    scheduler.add_job(harvest_all_accounts, 'interval', seconds=20)
     scheduler.start()
     
