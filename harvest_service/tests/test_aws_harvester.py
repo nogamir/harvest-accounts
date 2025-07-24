@@ -13,9 +13,9 @@ def mock_account():
         secret="encrypted-secret"
     )
 
-@patch("src.aws_harvester.decrypt_secret", return_value="fake-secret")
+@patch("aws_harvester.decrypt_secret", return_value="fake-secret")
 def test_create_boto3_session(mock_decrypt, mock_account):
-    with patch("src.aws_harvester.boto3.Session") as mock_session:
+    with patch("aws_harvester.boto3.Session") as mock_session:
         session = create_boto3_session(mock_account)
         mock_session.assert_called_with(
             aws_access_key_id="fake-access",

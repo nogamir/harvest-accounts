@@ -1,10 +1,8 @@
 from utils.models import Account, S3Bucket, IAMRole
 from utils.models import S3Bucket
-from datetime import date, time, datetime
 from utils.crypto_helper import decrypt_secret
 import boto3
 
-###COMPLETE ACCORDING TO SPECIFICATIONS
 def create_boto3_session(account: Account):
     return boto3.Session(
         aws_access_key_id=account["accessKey"],
@@ -38,7 +36,7 @@ def harvest_buckets(session):
             creationDate=creation_date,
             name=name,
         )
-        buckets.append(bucket.dict())
+        buckets.append(bucket.model_dump())
 
     return buckets
 
@@ -60,7 +58,7 @@ def harvest_roles(session):
         last_used = last_used if last_used else None
 
         tags_resp = iam.list_role_tags(RoleName=role_name)
-        tags = [{tag["Key"]: tag["Value"]} for tag in tags_resp.get("Tags", [])]
+        tags = tags_resp.get("Tags", [])
 
         inline_policies_resp = iam.list_role_policies(RoleName=role_name)
         inline_policies_names = inline_policies_resp.get("PolicyNames", [])
@@ -76,6 +74,6 @@ def harvest_roles(session):
             tags=tags,
             inlinePoliciesNames=inline_policies_names,
         )
-        roles.append(role.dict())
+        roles.append(role.model_dump())
 
     return roles
