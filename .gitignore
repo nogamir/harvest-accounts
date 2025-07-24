@@ -1,4 +1,4 @@
 *.pyc
 mongo_db/*
 test.txt
-.env.env
+.env
