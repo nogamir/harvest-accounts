@@ -13,27 +13,6 @@ harvest_db = client[HARVEST_DB_NAME]
 
 accounts_collection = accounts_db[ACCOUNTS_COLLECTION_NAME]
 
-###HARVEST FOR THE EXISTING ACCOUNTS
-# def harvest_all_accounts():
-#     accounts = list(accounts_collection.find({}))
-#     for account in accounts:
-#         session = create_boto3_session(account)
-#         buckets_data = harvest_buckets(session)
-#         roles_data = harvest_roles(session)
-
-#         for bucket_data in buckets_data:
-#             harvest_db[BUCKETS_COLLECTION_NAME].update_one(
-#                 {"account_id": account["_id"], "id": bucket_data["id"]},  # filter
-#                 {"$set": bucket_data, "$setOnInsert": {"account_id": account["_id"]}},  # update
-#                 upsert=True
-#             )
-#         for role_data in roles_data:
-#             harvest_db[ROLES_COLLECTION_NAME].update_one(
-#                 {"account_id": account["_id"], "id": role_data["id"]},  # filter
-#                 {"$set": role_data, "$setOnInsert": {"account_id": account["_id"]}},  # update
-#                 upsert=True
-#             )
-
 
 def harvest_all_accounts():
     # Fetch active accounts
@@ -78,8 +57,6 @@ def harvest_all_accounts():
                 upsert=True
             ) for r in roles_data
         ]
-        print("HIIIIIIIII")
-        print(bucket_ops)
         if bucket_ops:
             harvest_db[BUCKETS_COLLECTION_NAME].bulk_write(bucket_ops, ordered=False)
         if role_ops:

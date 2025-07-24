@@ -22,11 +22,10 @@ def harvest_buckets(session):
         
         creation_date = bucket_data["CreationDate"]
 
-        # # Get bucket region
-        # region_resp = s3.get_bucket_location(Bucket=name)
-        # region = region_resp.get("LocationConstraint")
-        # region = region if region else None
-        region = None
+        # Get bucket region
+        region_resp = s3.get_bucket_location(Bucket=name)
+        region = region_resp.get("LocationConstraint")
+        region = region if region else "us-east-1" # default for no region specified
 
         # Construct bucket ARN
         bucket_arn = f"arn:aws:s3:::{name}"
