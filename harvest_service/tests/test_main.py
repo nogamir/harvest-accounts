@@ -1,6 +1,10 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from datetime import datetime
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # Adjust path to import from src
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))  # Adjust path to import from src
 from src import main
 
 @patch("main.create_boto3_session")

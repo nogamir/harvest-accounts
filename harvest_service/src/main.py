@@ -1,6 +1,7 @@
 from pymongo import MongoClient, UpdateOne
 from aws_harvester import create_boto3_session, harvest_buckets, harvest_roles
 from apscheduler.schedulers.blocking import BlockingScheduler
+from utils.models import Account
 from utils.db_shared import (
     MONGODB_URI, ACCOUNTS_DB_NAME, ACCOUNTS_COLLECTION_NAME, 
     HARVEST_DB_NAME, BUCKETS_COLLECTION_NAME, ROLES_COLLECTION_NAME
@@ -25,7 +26,7 @@ def harvest_all_accounts():
 
     # For each active account, harvest active buckets and roles
     for account in accounts:
-        session       = create_boto3_session(account)
+        session       = create_boto3_session(Account(**account))
         buckets_data  = harvest_buckets(session)
         roles_data    = harvest_roles(session)
 

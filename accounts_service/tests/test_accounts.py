@@ -1,6 +1,5 @@
 import pytest
 import os
-os.environ["FERNET_KEY"] = "QM3CAYtgFqmIe1YGQV0OncGM3ArqTa11vzGpCv2xHdk="
 from fastapi.testclient import TestClient
 from unittest.mock import AsyncMock, patch, MagicMock
 from app.main import app

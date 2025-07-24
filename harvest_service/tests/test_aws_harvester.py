@@ -1,7 +1,12 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from datetime import datetime
-from utils.models import Account, S3Bucket, IAMRole
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # Adjust path to import from src
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))  # Adjust path to import from src
+from src.utils.models import Account, S3Bucket, IAMRole
+from src.utils.crypto_helper import encrypt_secret
 from src.aws_harvester import create_boto3_session, harvest_buckets, harvest_roles
 
 @pytest.fixture
@@ -10,7 +15,7 @@ def mock_account():
         id="123",
         name="test-account",
         accessKey="fake-access",
-        secret="encrypted-secret"
+        secret=encrypt_secret("fake-secret")
     )
 
 @patch("aws_harvester.decrypt_secret", return_value="fake-secret")

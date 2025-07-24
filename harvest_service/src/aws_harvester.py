@@ -5,8 +5,8 @@ import boto3
 
 def create_boto3_session(account: Account):
     return boto3.Session(
-        aws_access_key_id=account["accessKey"],
-        aws_secret_access_key=decrypt_secret(account["secret"]),
+        aws_access_key_id=account.accessKey,
+        aws_secret_access_key=decrypt_secret(account.secret),
         region_name="eu-north-1",
     )
 
