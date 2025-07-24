@@ -1,0 +1,102 @@
+import pytest
+from unittest.mock import patch, MagicMock
+from datetime import datetime
+from src import main
+
+@patch("src.main.create_boto3_session")
+@patch("src.main.harvest_roles")
+@patch("src.main.harvest_buckets")
+@patch("src.main.accounts_collection.find")
+@patch("src.main.harvest_db")
+def test_harvest_all_accounts(mock_db, mock_find, mock_buckets, mock_roles, mock_create_session):
+    mock_find.return_value = [{"_id": "acc1", "accessKey": "k", "secret": "s", "name": "acc"}]
+    mock_buckets.return_value = [{
+        "id": "bucket1",
+        "type": "s3",
+        "bucketArn": "arn:aws:s3:::bucket1",
+        "bucketRegion": "us-east-1",
+        "creationDate": datetime(2020, 1, 1),
+        "name": "bucket1",
+    }]
+    mock_roles.return_value = [{
+        "id": "arn:aws:iam::123456789012:role/role1",
+        "type": "role",
+        "createDate": datetime(2021, 1, 1),
+        "path": "/",
+        "roleId": "roleid1",
+        "roleName": "role1",
+        "roleLastUsed": datetime(2022, 1, 1),
+        "tags": [],
+        "inlinePoliciesNames": ["policy1"],
+    }]
+
+    mock_coll_buckets = MagicMock()
+    mock_coll_roles = MagicMock()
+    mock_db.__getitem__.side_effect = lambda name: {
+        "buckets": mock_coll_buckets,
+        "roles": mock_coll_roles,
+    }[name]
+
+    main.harvest_all_accounts()
+
+    mock_coll_buckets.delete_many.assert_called()
+    mock_coll_roles.delete_many.assert_called()
+    mock_coll_buckets.bulk_write.assert_called_once()
+    mock_coll_roles.bulk_write.assert_called_once()
+
+
+@patch("src.main.accounts_collection.find")
+@patch("src.main.harvest_db")
+def test_delete_buckets_and_roles_for_inactive_accounts(mock_db, mock_find):
+    mock_find.return_value = []
+    mock_coll_buckets = MagicMock()
+    mock_coll_roles = MagicMock()
+    mock_db.__getitem__.side_effect = lambda name: {
+        "buckets": mock_coll_buckets,
+        "roles": mock_coll_roles,
+    }[name]
+
+    main.harvest_all_accounts()
+
+    mock_coll_buckets.delete_many.assert_called_once_with({"account_id": {"$nin": []}})
+    mock_coll_roles.delete_many.assert_called_once_with({"account_id": {"$nin": []}})
+
+
+@patch("src.main.create_boto3_session")
+@patch("src.main.harvest_roles")
+@patch("src.main.harvest_buckets")
+@patch("src.main.accounts_collection.find")
+@patch("src.main.harvest_db")
+def test_delete_inactive_buckets_and_roles_for_active_account(mock_db, mock_find, mock_buckets, mock_roles, mock_create_session):
+
+    account_id = "acc1"
+    mock_find.return_value = [{"_id": account_id, "accessKey": "k", "secret": "s", "name": "acc"}]
+
+    mock_buckets.return_value = [
+        {"id": "bucket1", "type": "s3", "bucketArn": "arn:aws:s3:::bucket1", "bucketRegion": "us-east-1", "creationDate": datetime(2020, 1, 1), "name": "bucket1"},
+        {"id": "bucket2", "type": "s3", "bucketArn": "arn:aws:s3:::bucket2", "bucketRegion": "us-west-2", "creationDate": datetime(2020, 2, 2), "name": "bucket2"},
+    ]
+    mock_roles.return_value = [
+        {"id": "role1", "type": "role", "createDate": datetime(2021, 1, 1), "path": "/", "roleId": "roleid1", "roleName": "role1", "roleLastUsed": None, "tags": [], "inlinePoliciesNames": []},
+    ]
+
+    mock_coll_buckets = MagicMock()
+    mock_coll_roles = MagicMock()
+    mock_db.__getitem__.side_effect = lambda name: {
+        "buckets": mock_coll_buckets,
+        "roles": mock_coll_roles,
+    }[name]
+
+    main.harvest_all_accounts()
+
+    mock_coll_buckets.delete_many.assert_any_call({
+        "account_id": account_id,
+        "id": {"$nin": ["bucket1", "bucket2"]},
+    })
+    mock_coll_roles.delete_many.assert_any_call({
+        "account_id": account_id,
+        "id": {"$nin": ["role1"]},
+    })
+
+    mock_coll_buckets.bulk_write.assert_called_once()
+    mock_coll_roles.bulk_write.assert_called_once()
