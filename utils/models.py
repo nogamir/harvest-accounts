@@ -1,5 +1,7 @@
 from datetime import date, datetime
 from pydantic import BaseModel
+from typing import Optional
+
 
 class Account(BaseModel):
     id: str
@@ -18,10 +20,10 @@ class S3Bucket(BaseModel):
 class IAMRole(BaseModel):
     id: str
     type: str
-    createDate: date
+    createDate: datetime
     path: str
     roleId: str
     roleName: str
-    roleLastUsed: date
+    roleLastUsed: Optional[datetime]
     tags: list
     inlinePoliciesNames: list

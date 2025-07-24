@@ -20,11 +20,11 @@ def harvest_buckets(session):
     for bucket_data in buckets_data:
         name = bucket_data["Name"]
         
-        raw_date = bucket_data["CreationDate"]
-        if isinstance(raw_date, date) and not isinstance(raw_date, datetime):
-            creation_date = datetime.combine(raw_date, time())
-        else:
-            creation_date = raw_date
+        creation_date = bucket_data["CreationDate"]
+        # if isinstance(raw_date, date) and not isinstance(raw_date, datetime):
+        #     creation_date = datetime.combine(raw_date, time())
+        # else:
+        #     creation_date = raw_date
 
         # Get bucket region
         region_resp = s3.get_bucket_location(Bucket=name)
@@ -56,11 +56,11 @@ def harvest_roles(session):
         id = role_data["Arn"]
         role_name = role_data["RoleName"]
         role_id = role_data["RoleId"]
-        create_date = role_data["CreateDate"].date()
+        create_date = role_data["CreateDate"]
         path = role_data.get("Path", "")
         
         last_used = role_data.get("RoleLastUsed", {}).get("LastUsedDate")
-        last_used = last_used.date() if last_used else None
+        last_used = last_used if last_used else None
 
         tags_resp = iam.list_role_tags(RoleName=role_name)
         tags = [{tag["Key"]: tag["Value"]} for tag in tags_resp.get("Tags", [])]
