@@ -68,7 +68,7 @@ docker-compose down
 
 Testing
 
-Run all tests using `pytest`. Make sure your `PYTHONPATH` is set appropriately.
+Run all tests using `pytest`. 
 
 ##################
 
@@ -76,6 +76,7 @@ Limitations
 
 - No Exception Handling: The current implementation does not include structured exception handling. Errors from AWS clients, database operations, or internal logic may cause the application to crash or behave unpredictably.
 - No Duplicate Handling: There is no logic in place to prevent or handle duplicate entries in the database (e.g., inserting the same account multiple times).
+- In each service container, the utils are mapped to be inside each service folder, and not outside in a different folder, as it is in the project structure. Thus, in order to preserve the project structure for tests, they must run from within the container. Ideally, the utils would be published as a python package, and then the project structure would have been the same in all cases. 
 
 
 

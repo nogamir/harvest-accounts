@@ -4,8 +4,6 @@ os.environ["FERNET_KEY"] = "QM3CAYtgFqmIe1YGQV0OncGM3ArqTa11vzGpCv2xHdk="
 from fastapi.testclient import TestClient
 from unittest.mock import AsyncMock, patch, MagicMock
 from app.main import app
-from app.crypto_helper import encrypt_secret, decrypt_secret
-
 
 client = TestClient(app)
 
