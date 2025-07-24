@@ -16,6 +16,7 @@ sample_account = {
     "secret": "somesecret",
 }
 
+
 @pytest.fixture
 def mock_accounts_collection():
     mock_collection = MagicMock()

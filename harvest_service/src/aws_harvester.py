@@ -21,14 +21,12 @@ def harvest_buckets(session):
         name = bucket_data["Name"]
         
         creation_date = bucket_data["CreationDate"]
-        # if isinstance(raw_date, date) and not isinstance(raw_date, datetime):
-        #     creation_date = datetime.combine(raw_date, time())
-        # else:
-        #     creation_date = raw_date
 
-        # Get bucket region
-        region_resp = s3.get_bucket_location(Bucket=name)
-        region = region_resp.get("LocationConstraint")
+        # # Get bucket region
+        # region_resp = s3.get_bucket_location(Bucket=name)
+        # region = region_resp.get("LocationConstraint")
+        # region = region if region else None
+        region = None
 
         # Construct bucket ARN
         bucket_arn = f"arn:aws:s3:::{name}"

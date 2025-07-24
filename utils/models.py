@@ -13,7 +13,7 @@ class S3Bucket(BaseModel):
     id: str 
     type: str
     bucketArn: str
-    bucketRegion: str
+    bucketRegion: Optional[str]
     creationDate: datetime
     name: str  
 

@@ -11,9 +11,8 @@ services:
     volumes:
       - ./accounts_service:/accounts_service
       - ./utils:/accounts_service/app/utils
-    environment:
-      - FERNET_KEY=QM3CAYtgFqmIe1YGQV0OncGM3ArqTa11vzGpCv2xHdk=
-      - MONGODB_URI=mongodb://mongo:27017
+    env_file:
+      - .env
     depends_on:
       - mongo
 
@@ -25,9 +24,8 @@ services:
     volumes:
       - ./harvest_service:/harvest_service
       - ./utils:/harvest_service/src/utils
-    environment:
-      - FERNET_KEY=QM3CAYtgFqmIe1YGQV0OncGM3ArqTa11vzGpCv2xHdk=
-      - MONGODB_URI=mongodb://mongo:27017
+    env_file:
+      - .env
     depends_on:
       - mongo
     restart: unless-stopped
